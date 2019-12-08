@@ -33,6 +33,9 @@ const SattelliteMenu = () => {
             Satellites
             <div>
               <Fab size="small" className={classes.headerAction}>
+                <Icon className="fal fa-search" fontSize="small" />
+              </Fab>
+              <Fab size="small" className={classes.headerAction}>
                 <Icon className="fal fa-filter" fontSize="small" />
               </Fab>
               <Fab size="small" className={classes.headerAction}>

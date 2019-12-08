@@ -1,7 +1,9 @@
-import React, {useEffect } from "react";
+import React, { useEffect } from "react";
+import Grid from "@material-ui/core/Grid";
 import axios from "axios";
 
 import SatelliteMenu from "./SatelliteMenu";
+import SatelliteInspector from "./SatelliteInspector";
 
 import { useSatelliteDispatch } from "./shared/context/satellite";
 import { ACTIONS } from "./shared/constants";
@@ -26,7 +28,14 @@ function App() {
 
   return (
     <main>
-      <SatelliteMenu />
+      <Grid container spacing={6}>
+        <Grid item xs={12} md={5} lg={4}>
+          <SatelliteMenu />
+        </Grid>
+        <Grid item xs={12} md={7} lg={8}>
+          <SatelliteInspector />
+        </Grid>
+      </Grid>
     </main>
   );
 }
