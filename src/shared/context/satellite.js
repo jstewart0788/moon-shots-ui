@@ -6,22 +6,41 @@ const SatelliteDispatchContext = React.createContext();
 
 const initialState = {
   satellites: { byIds: {}, allIds: [] },
-  visibleSatellites: [],
+  barrels: { byIds: {}, allIds: [] },
+  visibleBarrels: []
 };
 
 function satelliteReducer(state, action) {
   const { type, payload } = action;
   switch (type) {
     case ACTIONS.UPDATE_SATELLITES: {
-      const byIds = {};
-      const allIds = payload.map(satellite => {
-        byIds[satellite.id] = satellite;
+      const satelliteByIds = {};
+      const barrelByIds = {};
+      const barrelAllIds = [];
+      // Flatten Data
+      const satelliteAllIds = payload.map(satellite => {
+        // Organize Satellite Data
+        satelliteByIds[satellite.id] = {
+          ...satellite,
+          barrels: satellite.barrels.map(barrel => barrel.batch_id)
+        };
+        // Organize Barrel DAta
+        satellite.barrels.forEach(barrel => {
+          barrelAllIds.push(barrel.batch_id);
+          barrelByIds[barrel.batch_id] = {
+            ...barrel,
+            satellite_id: satellite.satellite_id
+          };
+        });
+
         return satellite.id;
       });
+
       return {
         ...state,
-        satellites: { byIds, allIds },
-        visibleSatellites: allIds
+        satellites: { byIds: satelliteByIds, allIds: satelliteAllIds },
+        barrels: { byIds: barrelByIds, allIds: barrelAllIds },
+        visibleBarrels: barrelAllIds
       };
     }
     default: {
@@ -42,14 +61,18 @@ function SatelliteProvider({ children }) {
 function useSatelliteState() {
   const context = React.useContext(SatelliteStateContext);
   if (context === undefined) {
-    throw new Error("useSatelliteState must be used within a SatelliteProvider");
+    throw new Error(
+      "useSatelliteState must be used within a SatelliteProvider"
+    );
   }
   return context;
 }
 function useSatelliteDispatch() {
   const context = React.useContext(SatelliteDispatchContext);
   if (context === undefined) {
-    throw new Error("useSatelliteDispatch must be used within a SatelliteProvider");
+    throw new Error(
+      "useSatelliteDispatch must be used within a SatelliteProvider"
+    );
   }
   return context;
 }
@@ -58,4 +81,9 @@ function useSatellite() {
   return [useSatelliteState(), useSatelliteDispatch()];
 }
 
-export { SatelliteProvider, useSatellite, useSatelliteState, useSatelliteDispatch };
+export {
+  SatelliteProvider,
+  useSatellite,
+  useSatelliteState,
+  useSatelliteDispatch
+};

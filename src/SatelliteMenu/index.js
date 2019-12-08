@@ -1,4 +1,6 @@
 import React from "react";
+import moment from "moment";
+
 import Paper from "@material-ui/core/Paper";
 import Avatar from "@material-ui/core/Avatar";
 import Icon from "@material-ui/core/Icon";
@@ -7,9 +9,9 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Divider from "@material-ui/core/Divider";
 import Fab from "@material-ui/core/Fab";
-import moment from "moment";
+import Divider from "@material-ui/core/Divider";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import { useSatelliteState } from "../shared/context/satellite";
 
@@ -17,37 +19,22 @@ import useStyles from "./styles";
 
 const SattelliteMenu = () => {
   const {
-    satellites: { byIds },
-    visibleSatellites
+    satellites: { byIds, allIds }
   } = useSatelliteState();
+
   const classes = useStyles();
 
   return (
-    <Paper className={classes.root}>
+    <Paper>
       <List
         component="nav"
         aria-labelledby="Satellite Menu"
         disablePadding
-        subheader={
-          <ListSubheader component="div" className={classes.header}>
-            Satellites
-            <div>
-              <Fab size="small" className={classes.headerAction}>
-                <Icon className="fal fa-search" fontSize="small" />
-              </Fab>
-              <Fab size="small" className={classes.headerAction}>
-                <Icon className="fal fa-filter" fontSize="small" />
-              </Fab>
-              <Fab size="small" className={classes.headerAction}>
-                <Icon className="far fa-plus" fontSize="small" />
-              </Fab>
-            </div>
-          </ListSubheader>
-        }
+        subheader={<ListSubheader component="div">Satellites</ListSubheader>}
       >
-        {visibleSatellites.map((id, index) => (
+        {allIds.map((id, index) => (
           <div key={`satellite-menu-item-${index}`}>
-            <ListItem button className={classes.item}>
+            <ListItem button className={classes.item} disableRipple>
               <ListItemAvatar>
                 <Avatar>
                   <Icon className="fal fa-satellite" />
@@ -59,6 +46,29 @@ const SattelliteMenu = () => {
                   byIds[id].telemetry_timestamp
                 ).format("MM/DD/YY @ HH:MM")}`}
               />
+              <div>
+                <Tooltip title="Trigger Deorbit Burn" aria-label="trigger deorbit burn">
+                  <Fab
+                    size="small"
+                    color="primary"
+                    className={classes.action}
+                  >
+                    <Icon
+                      className="fal fa-chevron-double-down"
+                      fontSize="small"
+                    />
+                  </Fab>
+                </Tooltip>
+                <Tooltip title="Detonate" aria-label="detonate">
+                  <Fab
+                    size="small"
+                    color="secondary"
+                    className={classes.action}
+                  >
+                    <Icon className="fal fa-bomb" fontSize="small" />
+                  </Fab>
+                </Tooltip>
+              </div>
             </ListItem>
             <Divider variant="inset" component="li" />
           </div>
