@@ -1,0 +1,5 @@
+  const ACTION_BASE = "SATELLITES/";
+  
+  export const ACTIONS = {
+    UPDATE_SATELLITES: `${ACTION_BASE}UPDATE_SATELLITES`
+  };

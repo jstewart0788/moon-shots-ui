@@ -1,25 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect } from "react";
+import axios from "axios";
+
+import SatelliteMenu from "./SatelliteMenu";
+
+import { useSatelliteDispatch } from "./shared/context/satellite";
+import { ACTIONS } from "./shared/constants";
 
 function App() {
+  const dispatch = useSatelliteDispatch();
+  useEffect(() => {
+    async function fetchCharms() {
+      try {
+        // Fetch Claims from API
+        const {
+          data: { satellites }
+        } = await axios.get(`/api`);
+
+        dispatch({ type: ACTIONS.UPDATE_SATELLITES, payload: satellites });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchCharms();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main>
+      <SatelliteMenu />
+    </main>
   );
 }
 
