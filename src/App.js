@@ -11,9 +11,9 @@ import { ACTIONS } from "./shared/constants";
 function App() {
   const dispatch = useSatelliteDispatch();
   useEffect(() => {
-    async function fetchCharms() {
+    async function fetchSatellites() {
       try {
-        // Fetch Claims from API
+        // Fetch Satellites from API
         const {
           data: { satellites }
         } = await axios.get(`/api`);
@@ -23,7 +23,7 @@ function App() {
         console.log(error);
       }
     }
-    fetchCharms();
+    fetchSatellites();
   }, []);
 
   return (
