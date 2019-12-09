@@ -31,7 +31,7 @@ const BarrelInspector = () => {
       {displayedBarrels.length > 0 ? (
         <Grid container spacing={4} className={classes.barrels}>
           {displayedBarrels.map((barrel, index) => (
-            <Grid item xs={12} md={4} key={`barrel-viewer-item-${index}`}>
+            <Grid item xs={12} sm={6} lg={4} key={`barrel-viewer-item-${index}`}>
               <Barrel barrel={byIds[barrel]} />
             </Grid>
           ))}
