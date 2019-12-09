@@ -1,14 +1,11 @@
-import React, { useState } from "react";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import Collapse from "@material-ui/core/Collapse";
-import Avatar from "@material-ui/core/Avatar";
+import React from "react";
+import moment from "moment";
 import Icon from "@material-ui/core/Icon";
-import IconButton from "@material-ui/core/IconButton";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import { capitalizeFirstLetter } from "../../shared/utils";
-
 import useStyles from "./styles";
 
 const Barrel = ({
@@ -17,58 +14,68 @@ const Barrel = ({
     batch_id: id,
     status,
     satellite_id,
-    barrel_errors: errors = []
-  },
-  barrel
+    lastUpdate,
+    barrel_errors: errors
+  }
 }) => {
   const classes = useStyles();
 
-  const [barrelExpanded, setBarrelExpanded] = useState(false);
-
-  const toggleExpand = () => {
-    setBarrelExpanded(!barrelExpanded);
+  const renderStatusIcon = status => {
+    switch (status) {
+      case "aging":
+        return (
+          <Tooltip title={capitalizeFirstLetter(status)} aria-label={status}>
+            <Icon
+              classes={{ root: classes.iconRoot }}
+              fontSize="default"
+              className="fal fa-hourglass-half"
+            />
+          </Tooltip>
+        );
+      case "error":
+        return (
+          <Tooltip title={capitalizeFirstLetter(status)} aria-label={status}>
+            <Icon
+              classes={{ root: classes.iconRoot }}
+              fontSize="default"
+              className="fal fa-exclamation-triangle"
+            />
+          </Tooltip>
+        );
+      default:
+        return (
+          <Tooltip title={capitalizeFirstLetter(status)} aria-label={status}>
+            <Icon
+              classes={{ root: classes.iconRoot }}
+              fontSize="default"
+              className="fal fa-glass-whiskey-rocks"
+            />
+          </Tooltip>
+        );
+    }
   };
   return (
-    <Card className={classes.root}>
-      <CardHeader
-        avatar={
-          <Avatar>
-            <Icon className="fal fa-glass-whiskey-rocks" />
-          </Avatar>
-        }
-        action={
-          <>
-            <IconButton onClick={toggleExpand}>
-              <Icon className="far fa-chevron-down" />{" "}
-            </IconButton>
-          </>
-        }
-        title={`Batch: ${id}`}
-        subheader={`Satellite: ${satellite_id}`}
-      />
-      <CardContent classes={{ root: classes.cardRoot }}>
-        <Collapse in={barrelExpanded}>
-          <div className={classes.expandedBody}>
-            <div>
-              Status: <b> {capitalizeFirstLetter(status)} </b>
-            </div>
-            <div>
-              Last Flavor: <b> {capitalizeFirstLetter(flavor)} </b>
-            </div>
-            {errors.length > 0 && (
-              <div>
-                Errors:
-                <ul>
-                  {errors.map((error, index) => (
-                    <li key={`error-item-${index}`}>{error}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </Collapse>
-      </CardContent>
-    </Card>
+    <TableRow hover>
+      <TableCell align="center">{renderStatusIcon(status)}</TableCell>
+      <TableCell>{id}</TableCell>
+      <TableCell>{satellite_id}</TableCell>
+      <TableCell>
+        {lastUpdate && moment(lastUpdate).format("MM/DD/YY @ HH:MM")}
+      </TableCell>
+      <TableCell>{capitalizeFirstLetter(flavor)}</TableCell>
+      <TableCell>
+        {errors.length > 0 && (
+          <Tooltip
+            title={errors.map(error => (
+              <div key={`error-${error}`}>{error}</div>
+            ))}
+            aria-label={status}
+          >
+            <Icon className="fal fa-bug" />
+          </Tooltip>
+        )}
+      </TableCell>
+    </TableRow>
   );
 };
 

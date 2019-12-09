@@ -7,25 +7,15 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 import { useSatellite } from "../../shared/context/satellite";
 import { ACTIONS } from "../../shared/constants";
-import Sort from "../Sort";
 import Uploader from "../Uploader";
 import useStyles from "./styles";
 
 const HeaderActions = () => {
   const [state, dispatch] = useSatellite();
-  const [sortAnchor, setSortAnchor] = useState(null);
   const [openSearch, setOpenSearch] = useState(false);
   const [uploaderOpen, toggUploaderOpen] = useState(false);
 
   const { searchText } = state;
-
-  const openSort = event => {
-    setSortAnchor(event.currentTarget);
-  };
-
-  const closeSort = () => {
-    setSortAnchor(null);
-  };
 
   const searchHandler = e =>
     dispatch({
@@ -62,17 +52,15 @@ const HeaderActions = () => {
           </Fab>
         </Tooltip>
       </ClickAwayListener>
-      <Tooltip title="Sort" aria-label="sort">
-        <Fab size="small" className={classes.headerAction} onClick={openSort}>
-          <Icon className="fal fa-filter" fontSize="small" />
-        </Fab>
-      </Tooltip>
       <Tooltip title="Add New Satellite" aria-label="add">
-        <Fab size="small" className={classes.headerAction} onClick={setUploaderOpen(true)}>
+        <Fab
+          size="small"
+          className={classes.headerAction}
+          onClick={setUploaderOpen(true)}
+        >
           <Icon className="far fa-plus" fontSize="small" />
         </Fab>
       </Tooltip>
-      <Sort anchor={sortAnchor} handleClose={closeSort} />
       <Uploader open={uploaderOpen} setUploaderOpen={setUploaderOpen} />
     </section>
   );

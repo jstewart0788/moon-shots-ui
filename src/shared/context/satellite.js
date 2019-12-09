@@ -33,6 +33,7 @@ function satelliteReducer(state, action) {
           barrelAllIds.push(barrel.batch_id);
           barrelByIds[barrel.batch_id] = {
             ...barrel,
+            lastUpdate: satellite.telemetry_timestamp,
             satellite_id: satellite.satellite_id
           };
         });
@@ -54,16 +55,14 @@ function satelliteReducer(state, action) {
 
       //update sort state
       const { field, direction } = payload;
-      const newSort = { ...state.sort };
+      const newSort = { status: null, lastUpdate: null, error: null };
       newSort[field] = direction;
 
       // create custom collection to sort
       let sortedBarrelIds = state.barrels.allIds.map(id => {
         const barrel = state.barrels.byIds[id];
-        const lastUpdate =
-          state.satellites.byIds[barrel.satellite_id].telemetry_timestamp;
         const error = barrel.barrel_errors.length;
-        return { ...barrel, lastUpdate, error };
+        return { ...barrel, error };
       });
       // set search variables
       Object.keys(newSort).forEach(field => {
@@ -125,6 +124,7 @@ function satelliteReducer(state, action) {
         barrelAllIds.push(barrel.batch_id);
         barrelByIds[barrel.batch_id] = {
           ...barrel,
+          lastUpdate: payload.telemetry_timestamp,
           satellite_id: payload.satellite_id
         };
       });
