@@ -6,7 +6,6 @@ import Collapse from "@material-ui/core/Collapse";
 import Avatar from "@material-ui/core/Avatar";
 import Icon from "@material-ui/core/Icon";
 import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
 
 import { capitalizeFirstLetter } from "../../shared/utils";
 

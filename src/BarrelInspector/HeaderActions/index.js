@@ -8,13 +8,14 @@ import Tooltip from "@material-ui/core/Tooltip";
 import { useSatellite } from "../../shared/context/satellite";
 import { ACTIONS } from "../../shared/constants";
 import Sort from "../Sort";
+import Uploader from "../Uploader";
 import useStyles from "./styles";
 
 const HeaderActions = () => {
   const [state, dispatch] = useSatellite();
   const [sortAnchor, setSortAnchor] = useState(null);
   const [openSearch, setOpenSearch] = useState(false);
-
+  const [uploaderOpen, toggUploaderOpen] = useState(false);
 
   const { searchText } = state;
 
@@ -32,7 +33,11 @@ const HeaderActions = () => {
       payload: e.target.value
     });
 
-   const toggleOpenSearch = action => () => setOpenSearch(action);
+  const toggleOpenSearch = action => () => setOpenSearch(action);
+
+  const setUploaderOpen = value => () => {
+    toggUploaderOpen(value);
+  };
 
   const classes = useStyles();
 
@@ -47,7 +52,13 @@ const HeaderActions = () => {
             onClick={toggleOpenSearch(true)}
           >
             <Icon className="fal fa-search" fontSize="small" />
-            {openSearch && <TextField className={classes.searchText} onChange={searchHandler} value={searchText} />}
+            {openSearch && (
+              <TextField
+                className={classes.searchText}
+                onChange={searchHandler}
+                value={searchText}
+              />
+            )}
           </Fab>
         </Tooltip>
       </ClickAwayListener>
@@ -57,11 +68,12 @@ const HeaderActions = () => {
         </Fab>
       </Tooltip>
       <Tooltip title="Add New Satellite" aria-label="add">
-        <Fab size="small" className={classes.headerAction}>
+        <Fab size="small" className={classes.headerAction} onClick={setUploaderOpen(true)}>
           <Icon className="far fa-plus" fontSize="small" />
         </Fab>
       </Tooltip>
       <Sort anchor={sortAnchor} handleClose={closeSort} />
+      <Uploader open={uploaderOpen} setUploaderOpen={setUploaderOpen} />
     </section>
   );
 };

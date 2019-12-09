@@ -8,6 +8,7 @@ const SatelliteDispatchContext = React.createContext();
 const initialState = {
   satellites: { byIds: {}, allIds: [] },
   barrels: { byIds: {}, allIds: [] },
+  sortedBarrels: [],
   visibleBarrels: [],
   sort: { status: null, lastUpdate: null, error: null },
   searchText: ""
@@ -27,7 +28,7 @@ function satelliteReducer(state, action) {
           ...satellite,
           barrels: satellite.barrels.map(barrel => barrel.batch_id)
         };
-        // Organize Barrel DAta
+        // Organize Barrel Data
         satellite.barrels.forEach(barrel => {
           barrelAllIds.push(barrel.batch_id);
           barrelByIds[barrel.batch_id] = {
@@ -42,6 +43,7 @@ function satelliteReducer(state, action) {
         ...state,
         satellites: { byIds: satelliteByIds, allIds: satelliteAllIds },
         barrels: { byIds: barrelByIds, allIds: barrelAllIds },
+        sortedBarrels: barrelAllIds,
         visibleBarrels: barrelAllIds
       };
     }
@@ -80,7 +82,7 @@ function satelliteReducer(state, action) {
       return {
         ...state,
         sort: newSort,
-        visibleBarrels: sortedBarrelIds
+        sortedBarrels: sortedBarrelIds
       };
     }
     case ACTIONS.SEARCH_BARRELS: {
@@ -91,13 +93,47 @@ function satelliteReducer(state, action) {
       const sortedBarrelIds = allIds.filter(
         id =>
           byIds[id].status.toLowerCase().includes(searchPhrase) ||
-          byIds[id].last_flavor_sensor_result.toLowerCase().includes(searchPhrase) ||
-          byIds[id].barrel_errors.some(err => err.toLowerCase().includes(searchPhrase))
+          byIds[id].last_flavor_sensor_result
+            .toLowerCase()
+            .includes(searchPhrase) ||
+          byIds[id].barrel_errors.some(err =>
+            err.toLowerCase().includes(searchPhrase)
+          )
       );
       return {
         ...state,
         searchText: payload,
         visibleBarrels: sortedBarrelIds
+      };
+    }
+    case ACTIONS.ADD_SATELLITE: {
+      const satelliteByIds = state.satellites.byIds;
+      const barrelByIds = state.barrels.byIds;
+      const barrelAllIds = state.barrels.allIds;
+      // Flatten Data
+      const satelliteAllIds = [
+        ...state.satellites.allIds,
+        payload.satellite_id
+      ];
+      // Organize Satellite Data
+      satelliteByIds[payload.satellite_id] = {
+        ...payload,
+        barrels: payload.barrels.map(barrel => barrel.batch_id)
+      };
+      // Organize Barrel Data
+      payload.barrels.forEach(barrel => {
+        barrelAllIds.push(barrel.batch_id);
+        barrelByIds[barrel.batch_id] = {
+          ...barrel,
+          satellite_id: payload.satellite_id
+        };
+      });
+      return {
+        ...state,
+        satellites: { byIds: satelliteByIds, allIds: satelliteAllIds },
+        barrels: { byIds: barrelByIds, allIds: barrelAllIds },
+        sortedBarrels: barrelAllIds,
+        visibleBarrels: barrelAllIds
       };
     }
     default: {

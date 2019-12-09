@@ -1,0 +1,24 @@
+{
+  "satellite_id": 2,
+  "barrels": [
+    {
+      "barrel_errors": [],
+      "batch_id": 4,
+      "last_flavor_sensor_result": "woody",
+      "status": "aging"
+    },
+    {
+      "barrel_errors": ["RUD - barrel has exploded"],
+      "batch_id": 5,
+      "last_flavor_sensor_result": "error",
+      "status": "error"
+    },
+    {
+      "barrel_errors": [],
+      "batch_id": 6,
+      "last_flavor_sensor_result": "spicy with a hint of radiation",
+      "status": "ready"
+    }
+  ],
+  "telemetry_timestamp": "1970-01-18T18:09:58.007Z"
+}
