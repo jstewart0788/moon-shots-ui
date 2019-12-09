@@ -8,23 +8,9 @@ import Icon from "@material-ui/core/Icon";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 
-import { BARREL_STATUS } from "../../shared/constants";
 import { capitalizeFirstLetter } from "../../shared/utils";
 
 import useStyles from "./styles";
-
-const statusColor = status => {
-  switch (status) {
-    case BARREL_STATUS.AGING:
-      return null;
-    case BARREL_STATUS.READY:
-      return { backgroundColor: "#4BB543" };
-    case BARREL_STATUS.ERROR:
-      return { backgroundColor: "#E5202D" };
-    default:
-      return null;
-  }
-};
 
 const Barrel = ({
   barrel: {
@@ -47,7 +33,7 @@ const Barrel = ({
     <Card className={classes.root}>
       <CardHeader
         avatar={
-          <Avatar style={statusColor(status)}>
+          <Avatar>
             <Icon className="fal fa-glass-whiskey-rocks" />
           </Avatar>
         }

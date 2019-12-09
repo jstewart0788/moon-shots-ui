@@ -5,32 +5,54 @@ import Fab from "@material-ui/core/Fab";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Tooltip from "@material-ui/core/Tooltip";
 
+import { useSatellite } from "../../shared/context/satellite";
+import { ACTIONS } from "../../shared/constants";
+import Sort from "../Sort";
 import useStyles from "./styles";
 
 const HeaderActions = () => {
-  const [searching, setSearching] = useState(false);
+  const [state, dispatch] = useSatellite();
+  const [sortAnchor, setSortAnchor] = useState(null);
+  const [openSearch, setOpenSearch] = useState(false);
 
-  const searchHandler = value => () => setSearching(value);
+
+  const { searchText } = state;
+
+  const openSort = event => {
+    setSortAnchor(event.currentTarget);
+  };
+
+  const closeSort = () => {
+    setSortAnchor(null);
+  };
+
+  const searchHandler = e =>
+    dispatch({
+      type: ACTIONS.SEARCH_BARRELS,
+      payload: e.target.value
+    });
+
+   const toggleOpenSearch = action => () => setOpenSearch(action);
 
   const classes = useStyles();
 
   return (
     <section>
-      <ClickAwayListener onClickAway={searchHandler(false)}>
+      <ClickAwayListener onClickAway={toggleOpenSearch(false)}>
         <Tooltip title="Search" aria-label="search">
           <Fab
             size="small"
             className={classes.headerAction}
-            variant={searching ? "extended" : null}
-            onClick={searchHandler(true)}
+            variant={openSearch ? "extended" : null}
+            onClick={toggleOpenSearch(true)}
           >
             <Icon className="fal fa-search" fontSize="small" />
-            {searching && <TextField className={classes.searchText} />}
+            {openSearch && <TextField className={classes.searchText} onChange={searchHandler} value={searchText} />}
           </Fab>
         </Tooltip>
       </ClickAwayListener>
       <Tooltip title="Sort" aria-label="sort">
-        <Fab size="small" className={classes.headerAction}>
+        <Fab size="small" className={classes.headerAction} onClick={openSort}>
           <Icon className="fal fa-filter" fontSize="small" />
         </Fab>
       </Tooltip>
@@ -39,6 +61,7 @@ const HeaderActions = () => {
           <Icon className="far fa-plus" fontSize="small" />
         </Fab>
       </Tooltip>
+      <Sort anchor={sortAnchor} handleClose={closeSort} />
     </section>
   );
 };
